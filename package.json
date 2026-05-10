@@ -1,0 +1,54 @@
+{
+  "name": "kyros-cli",
+  "version": "0.1.1",
+  "description": "Kyros multi-agent CLI for Claude Code, Codex, and OpenCode.",
+  "homepage": "https://kyros.team",
+  "license": "MIT",
+  "keywords": [
+    "kyros",
+    "multi-agent",
+    "codex",
+    "claude-code",
+    "opencode"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitooz/kyros-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bitooz/kyros-cli/issues"
+  },
+  "type": "module",
+  "bin": {
+    "kyros": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.86",
+    "@openai/codex-sdk": "^0.130.0",
+    "@opencode-ai/sdk": "^1.14.46",
+    "ink": "6.8.0",
+    "ink-text-input": "6.0.0",
+    "marked": "9.1.6",
+    "marked-terminal": "6.2.0",
+    "react": "19.2.4",
+    "undici": "^7.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "19.2.14",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
