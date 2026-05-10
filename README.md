@@ -1,3 +1,5 @@
+<img width="990" height="702" alt="image" src="https://github.com/user-attachments/assets/a1f0d29b-44c4-40e0-b824-34907088ae1c" />
+
 # Kyros CLI
 
 Kyros is a multi-agent command-line workspace for running Claude Code, Codex, and OpenCode from one terminal UI.
