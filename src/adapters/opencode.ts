@@ -1,6 +1,5 @@
 import {
-  createOpencodeClient,
-  createOpencodeServer,
+  createOpencode,
   type Event as OpenCodeEvent,
   type Message,
   type Part,
@@ -12,15 +11,10 @@ import {
 import { execFile } from "node:child_process";
 import { createServer } from "node:net";
 import { promisify } from "node:util";
-import { Agent } from "undici";
 import type { AdapterEvent, AdapterFactory, AdapterModelOption, AdapterSession, AdapterSessionConfig, PermissionDecision, PermissionRequest, QuestionAnswer, QuestionRequest, TokenUsage } from "./types.js";
 import { mergeSystemPrompt } from "./prompting.js";
 
-interface OpenCodeHandle {
-  client: ReturnType<typeof createOpencodeClient>;
-  server: Awaited<ReturnType<typeof createOpencodeServer>>;
-  dispatcher: Agent;
-}
+type OpenCodeHandle = Awaited<ReturnType<typeof createOpencode>>;
 const execFileAsync = promisify(execFile);
 const DEFAULT_OPENCODE_WAIT_HEARTBEAT_MS = 15_000;
 let openCodeModelCache:
@@ -73,20 +67,6 @@ function getConfiguredOpenCodePort(): number | undefined {
   return port;
 }
 
-function getConfiguredOpenCodeStartupTimeout(): number {
-  const raw = process.env.KYROS_INK_OPENCODE_STARTUP_TIMEOUT_MS?.trim();
-  if (!raw) {
-    return 30_000;
-  }
-
-  const timeout = Number(raw);
-  if (!Number.isInteger(timeout) || timeout <= 0) {
-    return 30_000;
-  }
-
-  return timeout;
-}
-
 async function findAvailableOpenCodePort(): Promise<number> {
   return await new Promise<number>((resolve, reject) => {
     const probe = createServer();
@@ -120,33 +100,10 @@ async function findAvailableOpenCodePort(): Promise<number> {
 async function createOpenCodeHandle(): Promise<OpenCodeHandle> {
   const configuredPort = getConfiguredOpenCodePort();
   const port = configuredPort ?? await findAvailableOpenCodePort();
-  const server = await createOpencodeServer({
+  return createOpencode({
     hostname: "127.0.0.1",
     port,
-    timeout: getConfiguredOpenCodeStartupTimeout(),
   });
-  const dispatcher = new Agent({
-    bodyTimeout: 0,
-    headersTimeout: 0,
-  });
-  // OpenCode's generated SSE client uses fetch for a long-lived local event
-  // stream. Node ignores the SDK's Request.timeout=false shim, so explicitly
-  // disable undici body timeouts for this client.
-  const fetchWithoutBodyTimeout: typeof fetch = (input, init) =>
-    fetch(input, {
-      ...init,
-      dispatcher,
-    } as unknown as RequestInit);
-  const client = createOpencodeClient({
-    baseUrl: server.url,
-    fetch: fetchWithoutBodyTimeout,
-  });
-
-  return {
-    client,
-    server,
-    dispatcher,
-  };
 }
 
 async function getOpenCodeHandle(): Promise<OpenCodeHandle> {
@@ -172,7 +129,6 @@ async function closeOpenCodeHandleIfIdle(): Promise<void> {
   try {
     const handle = await handlePromise;
     handle.server.close();
-    await handle.dispatcher.close();
   } catch {
     // If startup failed, getOpenCodeHandle already cleared the singleton.
   }
@@ -1174,7 +1130,6 @@ export class OpenCodeAdapter implements AdapterFactory {
       }
       released = true;
       handle.server.close();
-      await handle.dispatcher.close();
     };
 
     try {

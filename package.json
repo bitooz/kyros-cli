@@ -41,8 +41,7 @@
     "ink-text-input": "6.0.0",
     "marked": "9.1.6",
     "marked-terminal": "6.2.0",
-    "react": "19.2.4",
-    "undici": "^7.25.0"
+    "react": "19.2.4"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

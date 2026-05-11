@@ -32,9 +32,6 @@ importers:
       react:
         specifier: 19.2.4
         version: 19.2.4
-      undici:
-        specifier: ^7.25.0
-        version: 7.25.0
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
@@ -1237,10 +1234,6 @@ packages:
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
-
-  undici@7.25.0:
-    resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
-    engines: {node: '>=20.18.1'}
 
   unicode-emoji-modifier-base@1.0.0:
     resolution: {integrity: sha512-yLSH4py7oFH3oG/9K+XWrz1pSi3dfUrWEnInbxMfArOfc1+33BlGPQtLsOYwvdMy11AwUBetYuaRxSPqgkq+8g==}
@@ -2447,8 +2440,6 @@ snapshots:
   typescript@5.9.3: {}
 
   undici-types@7.16.0: {}
-
-  undici@7.25.0: {}
 
   unicode-emoji-modifier-base@1.0.0: {}
 
